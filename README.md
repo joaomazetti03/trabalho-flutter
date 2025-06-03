@@ -41,7 +41,7 @@ O projeto segue o padrão arquitetural **MVVM (Model-View-ViewModel)**, conforme
 * **Feedback Visual**:
     * Exibe um indicador de progresso (`Progressing Indicator`) enquanto as informações são buscadas na API.
 * **Detalhes da Criptomoeda**:
-    * Ao clicar em uma criptomoeda na lista, exibe um BottomSheet (ou AlertDialog/nova Tela) com detalhes adicionais:
+    * Ao clicar em uma criptomoeda na lista, exibe um BottomSheet com detalhes adicionais:
         * Nome (Name)
         * Símbolo (Symbol)
         * Data de Adição (Data Added)
