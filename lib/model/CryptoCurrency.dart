@@ -4,8 +4,7 @@ class CryptoCurrency {
   final String simbolo;
   final double precoUsd;
   final DateTime dataAdicionado;
-  // Adicionaremos priceBrl posteriormente, após a conversão.
-  double? priceBrl; // Nullable, pois calcularemos depois
+  double? priceBrl; 
 
   CryptoCurrency({
     required this.id,
@@ -16,41 +15,34 @@ class CryptoCurrency {
     this.priceBrl,
   });
 
-  // Fábrica para criar uma instância a partir de um JSON
-  // A estrutura exata do JSON dependerá da resposta da API CoinMarketCap.
-  // Você precisará ajustar isso com base na documentação da API e no retorno real.
-  factory CryptoCurrency.fromJson(Map<String, dynamic> json, String symbolKey) {
-    // A API da CoinMarketCap pode retornar os dados de várias moedas em um map
-    // onde a chave é o símbolo da moeda.
-    // Exemplo de estrutura esperada (pode variar):
-    // {
-    //   "data": {
-    //     "BTC": {
-    //       "id": 1,
-    //       "name": "Bitcoin",
-    //       "symbol": "BTC",
-    //       "date_added": "2013-04-28T00:00:00.000Z",
-    //       "quote": {
-    //         "USD": {
-    //           "price": 60000.00,
-    //           // ... outros dados de quote
-    //         }
-    //       }
-    //     },
-    //     "ETH": { ... }
-    //   },
-    //   "status": { ... }
-    // }
-    final currencyData = json['data'][symbolKey];
-    if (currencyData == null) {
-      throw Exception('Dados não encontrados para o símbolo: $symbolKey');
+  factory CryptoCurrency.fromJson(Map<String, dynamic> fullJsonResponse, String symbolKey) {
+    final Map<String, dynamic>? dataMap = fullJsonResponse['data'] as Map<String, dynamic>?;
+    if (dataMap == null) {
+      throw Exception("A resposta da API não contém a chave 'data'.");
+    }
+
+    final dynamic currencyRawData = dataMap[symbolKey];
+    if (currencyRawData == null) {
+      throw Exception('Dados não encontrados para o símbolo: $symbolKey na resposta da API.');
+    }
+
+    final Map<String, dynamic> currencyData = currencyRawData as Map<String, dynamic>;
+
+    final Map<String, dynamic>? quoteData = currencyData['quote'] as Map<String, dynamic>?;
+    if (quoteData == null) {
+      throw Exception('Dados de cotação não encontrados para o símbolo: $symbolKey.');
+    }
+
+    final Map<String, dynamic>? usdData = quoteData['BRL'] as Map<String, dynamic>?;
+    if (usdData == null) {
+      throw Exception('Dados de cotação USD não encontrados para o símbolo: $symbolKey.');
     }
 
     return CryptoCurrency(
       id: currencyData['id'].toString(),
       nome: currencyData['name'],
       simbolo: currencyData['symbol'],
-      precoUsd: (currencyData['quote']['USD']['price'] as num).toDouble(),
+      precoUsd: (currencyData['quote']['BRL']['price'] as num).toDouble(),
       dataAdicionado: DateTime.parse(currencyData['date_added']),
     );
   }
