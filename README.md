@@ -3,6 +3,7 @@
 ## Descrição do Projeto
 
 Acadêmico: João Lucas Pereira Françoso Mazetti
+
 RA: 23268463-2
 
 Este é um aplicativo desenvolvido em Flutter que consome a API da CoinMarketCap para listar cotações de criptomoedas. O projeto foi desenvolvido como atividade prática para a disciplina de Programação para Dispositivos Móveis, do curso de Análise e Desenvolvimento de Sistemas.
