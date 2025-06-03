@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../viewmodel/CryptoListViewModel.dart';
-import '../model/CryptoCurrency.dart';
+import '../../viewmodel/CryptoListViewModel.dart';
+import '../../data/model/CryptoCurrency.dart';
+import '../../util/CurrencyFormatter.dart';
 
 class CryptoListScreen extends StatefulWidget {
   const CryptoListScreen({super.key});
@@ -39,8 +40,8 @@ class _CryptoListScreenState extends State<CryptoListScreen> {
               Text('Símbolo: ${crypto.simbolo}'),
               Text('Adicionada em: ${crypto.dataAdicionado.toLocal().toString().split(' ')[0]}'),
               const SizedBox(height: 8),
-              Text('Preço USD: \$${crypto.precoUsd.toStringAsFixed(2)}'),
-              Text('Preço BRL: R\$${crypto.precoBrl.toStringAsFixed(2)}'),
+              Text('Preço USD: ${CurrencyFormatter.formatUSD(crypto.precoUsd)}'),
+              Text('Preço BRL: ${CurrencyFormatter.formatBRL(crypto.precoBrl)}'),
               const SizedBox(height: 16),
               Align(
                 alignment: Alignment.centerRight,
@@ -118,7 +119,7 @@ class _CryptoListScreenState extends State<CryptoListScreen> {
                           ),
                           title: Text('${crypto.nome} (${crypto.simbolo})'),
                           subtitle: Text(
-                              'USD: ${crypto.precoUsd.toStringAsFixed(2)} \nBRL: ${crypto.precoBrl.toStringAsFixed(2)}'
+                          'USD: ${CurrencyFormatter.formatUSD(crypto.precoUsd)} \nBRL: ${CurrencyFormatter.formatBRL(crypto.precoBrl)}'
                           ),
                           isThreeLine: true,
                           onTap: () {

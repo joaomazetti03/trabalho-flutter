@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
-import '../model/CryptoCurrency.dart';
-import '../repository/CryptoRepository.dart';
-import '../datasource/CoinMarketCapDataSource.dart';
+import '../data/model/CryptoCurrency.dart';
+import '../data/repository/CryptoRepository.dart';
+import '../data/datasource/CoinMarketCapDataSource.dart';
 
 class CryptoListViewModel extends ChangeNotifier {
   final CryptoRepository _repository = CryptoRepository(CoinMarketCapDataSource());

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'viewmodel/CryptoListViewModel.dart';
-import 'view/CryptoListScreen.dart';
+import 'view/screens/CryptoListScreen.dart';
 
 void main() {
   runApp(const MyApp());
