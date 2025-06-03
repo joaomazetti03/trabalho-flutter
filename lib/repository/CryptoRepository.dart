@@ -8,38 +8,28 @@ class CryptoRepository {
 
   Future<List<CryptoCurrency>> getCryptoCurrencies(List<String> symbols) async {
     try {
-      final rawData = await _dataSource.getCryptoListings(symbols);
+      final rawData = await _dataSource.getCryptoListingsInBRL(symbols);
+
+      double usdToBrlRate = 5.0;
+      try {
+        usdToBrlRate = await _dataSource.getUsdToBrlRate();
+      } catch (e) {
+        print("Aviso: Não foi possível buscar a taxa USD->BRL. Usando taxa de fallback $usdToBrlRate. Erro: $e");
+      }
+
+      if (usdToBrlRate == 0) {
+          print("Aviso: Taxa USD->BRL é zero. Não é possível calcular a taxa BRL->USD. Preços em USD podem ser zerados.");
+      }
+      final double brlToUsdRate = (usdToBrlRate == 0) ? 0 : 1 / usdToBrlRate;
+
       final List<CryptoCurrency> cryptoList = [];
 
       if (rawData.containsKey('data')) {
         final Map<String, dynamic> dataMap = rawData['data'];
-        double? brlRate;
-
-        // Tenta obter a cotação em BRL se a API do CoinMarketCap permitir
-        // Ou busca a taxa de conversão separadamente
-        // Verifique a estrutura da resposta da API CoinMarketCap.
-        // Se ela já fornecer 'BRL' dentro de 'quote', use-o diretamente.
-        // Exemplo: currencyData['quote']['BRL']['price']
-
-        // Se a API não fornecer BRL diretamente, buscamos a taxa de conversão.
-        // É mais eficiente buscar uma vez só do que para cada moeda.
-        // Porém, se a API do CoinMarketCap já tiver o parâmetro `convert=BRL`,
-        // a lógica de conversão abaixo pode não ser necessária ou ser diferente.
-        // Vamos assumir que precisamos converter USD para BRL.
-        try {
-          brlRate = await _dataSource.getUsdToBrlRate();
-        } catch (e) {
-          print("Aviso: Não foi possível buscar a taxa BRL. O preço em BRL não será calculado. Erro: $e");
-        }
-
 
         for (String symbol in symbols) {
           if (dataMap.containsKey(symbol)) {
-            CryptoCurrency crypto = CryptoCurrency.fromJson(rawData, symbol);
-
-            if (brlRate != null) {
-              crypto.priceBrl = crypto.precoUsd * brlRate;
-            }
+            CryptoCurrency crypto = CryptoCurrency.fromJson(rawData, symbol, brlToUsdRate);
             cryptoList.add(crypto);
           } else {
             print("Aviso: Dados para o símbolo $symbol não encontrados na resposta da API.");

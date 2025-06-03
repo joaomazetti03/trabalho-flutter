@@ -6,9 +6,10 @@ class CoinMarketCapDataSource {
   final String _baseUrl = 'pro-api.coinmarketcap.com';
   final String _quotesEndpoint = '/v1/cryptocurrency/quotes/latest';
 
-  Future<Map<String, dynamic>> getCryptoListings(List<String> simbolo) async {
+  Future<Map<String, dynamic>> getCryptoListingsInBRL(List<String> symbols) async {
+
     final queryParameters = {
-      'symbol': simbolo.join(','),
+      'symbol': symbols.join(','),
       'convert': 'BRL',
     };
 
@@ -28,7 +29,7 @@ class CoinMarketCapDataSource {
       } else {
         final errorBody = json.decode(response.body);
         throw Exception(
-            'Erro da API: ${response.statusCode} - ${errorBody['status']?['error_message'] ?? response.body}');
+            'Erro da API CoinMarketCap: ${response.statusCode} - ${errorBody['status']?['error_message'] ?? response.body}');
       }
     } catch (e) {
       throw Exception('Falha ao carregar dados das criptomoedas: $e');
